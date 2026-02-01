@@ -12,6 +12,11 @@ pipeline {
             }
         }
 
+        stage('Set Gradle Permissions') {
+            steps {
+                sh 'chmod +x gradlew'
+            }
+        }
 
         stage('Build') {
             steps {
@@ -38,9 +43,7 @@ pipeline {
             steps {
                 echo 'Running Docker container...'
                 sh '''
-                    # Stop any existing container
                     docker rm -f demo-microservice || true
-                    # Run the container
                     docker run -d -p 8080:8080 --name demo-microservice demo-microservice:latest
                 '''
             }
