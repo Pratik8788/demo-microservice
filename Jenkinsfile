@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'gradle:9.3-jdk17'   // Gradle + JDK
+            image 'gradle:9.3-jdk21'
             args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
