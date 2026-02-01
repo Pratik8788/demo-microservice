@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'gradle:9.3-jdk17'   // Gradle + JDK
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     stages {
         stage('Checkout') {
@@ -13,35 +18,23 @@ pipeline {
         }
 
         stage('Set Gradle Permissions') {
-            steps {
-                sh 'chmod +x gradlew'
-            }
+            steps { sh 'chmod +x gradlew' }
         }
 
         stage('Build') {
-            steps {
-                echo 'Building with Gradle...'
-                sh './gradlew clean build'
-            }
+            steps { sh './gradlew clean build' }
         }
 
         stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh './gradlew test'
-            }
+            steps { sh './gradlew test' }
         }
 
         stage('Docker Build') {
-            steps {
-                echo 'Building Docker image...'
-                sh 'docker build -t demo-microservice:latest .'
-            }
+            steps { sh 'docker build -t demo-microservice:latest .' }
         }
 
         stage('Docker Run') {
             steps {
-                echo 'Running Docker container...'
                 sh '''
                     docker rm -f demo-microservice || true
                     docker run -d -p 8080:8080 --name demo-microservice demo-microservice:latest
@@ -51,11 +44,7 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'Build Successful 🎉'
-        }
-        failure {
-            echo 'Build Failed ❌'
-        }
+        success { echo 'Build Successful 🎉' }
+        failure { echo 'Build Failed ❌' }
     }
 }
