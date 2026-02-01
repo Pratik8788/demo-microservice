@@ -4,9 +4,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/yourname/demo-microservice.git'
+                git(
+                    url: 'https://github.com/Pratik8788/demo-microservice.git',
+                    branch: 'main',
+                    credentialsId: 'github-pat'
+                )
             }
         }
+
 
         stage('Build') {
             steps {
